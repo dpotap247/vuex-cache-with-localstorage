@@ -7,6 +7,8 @@ const isObject = (value) => {
   return !!value && typeof value === 'object'
 }
 
+const LOCAL_STORAGE_KEY = 'VUEX-CACHE-STATE'
+
 /**
  * Type alias for Store or ActionContext instances.
  * @typedef {import('vuex').Store<any> | import('vuex').ActionContext<any, any>} Store
@@ -109,7 +111,7 @@ const isExpired = (expiresIn) => {
  * Cache's state.
  * @type {Map<string, CacheRecord>}
  */
-const previousState = localStorage && localStorage.getItem('VUEX_CACHE') && JSON.parse(localStorage.getItem('VUEX_CACHE')) || []
+const previousState = localStorage && localStorage.getItem(LOCAL_STORAGE_KEY) && JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY)) || []
 const state = new Map(previousState)
 
 /**
