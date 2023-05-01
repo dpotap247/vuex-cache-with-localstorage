@@ -10,6 +10,8 @@ Object.defineProperty(exports, '__esModule', { value: true });
 var isObject = function (value) {
   return !!value && typeof value === 'object';
 };
+
+var LOCAL_STORAGE_KEY = 'VUEX-CACHE-STATE';
 /**
  * Type alias for Store or ActionContext instances.
  * @typedef {import('vuex').Store<any> | import('vuex').ActionContext<any, any>} Store
@@ -20,7 +22,6 @@ var isObject = function (value) {
  * @param {any} value
  * @returns {string}
  */
-
 
 var toString = function (value) {
   return isObject(value) ? JSON.stringify(value) : String(value);
@@ -123,7 +124,7 @@ var isExpired = function (expiresIn) {
  */
 
 
-var previousState = localStorage && localStorage.getItem('VUEX_CACHE') && JSON.parse(localStorage.getItem('VUEX_CACHE')) || [];
+var previousState = localStorage && localStorage.getItem(LOCAL_STORAGE_KEY) && JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY)) || [];
 var state = new Map(previousState);
 /**
  * Define cache property to store, or action context, object.
