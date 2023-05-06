@@ -165,6 +165,7 @@ var defineCache = function (store, options) {
         value: store.dispatch.apply(store, params)
       };
       state.set(key, record);
+      state.set(key, record, 'vuex-cache-2');
       return record.value.catch(function (error) {
         state.delete(key);
         return Promise.reject(error);
