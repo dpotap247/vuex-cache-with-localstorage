@@ -126,6 +126,7 @@ var isExpired = function (expiresIn) {
 
 var previousState = localStorage && localStorage.getItem(LOCAL_STORAGE_KEY) && JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY)) || [];
 var state = new Map(previousState);
+console.log(state, previousState, 'vuex-cache');
 /**
  * Define cache property to store, or action context, object.
  * @param {Store} store
