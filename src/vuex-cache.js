@@ -148,7 +148,7 @@ const defineCache = (store, options) => {
       }
 
       state.set(key, record)
-      console.log(key, store.dispatch.apply(store, params), 'check');
+      console.log(value, 'check');
       return record.value.catch((error) => {
         state.delete(key)
         return Promise.reject(error)
