@@ -13,29 +13,12 @@ const createCache = (options) => (store) => defineCache(store, options)
 const createState = () => {
   const storageData = localStorage.getItem(LOCAL_STORAGE_KEY);
   const cacheData = storageData && JSON.parse(storageData) || [];
-  if (!!storageData) {
-    for (const item of cacheData) {
-      console.log(item, item[1], item[1].value, 'for')
-      item[1].value = new Promise((resolve) => {
-        resolve(item[1].value);
-      })
-    }
-  }
-  console.log(cacheData, 'cachedData')
   return new Map(cacheData);
 }
 
 const saveToLocalStorage = () => {
   window.addEventListener("beforeunload", function (event) {
     const localSrotageData = Array.from(state.entries());
-    for (const item of localSrotageData) {
-      if (item[1].value instanceof Promise) {
-        item[1].value.then(result => {
-          item[1].value = result;
-        })
-      }
-    }
-    console.log('saveToLocalStorage', localSrotageData)
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(localSrotageData));
   });
 }
