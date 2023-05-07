@@ -23,6 +23,7 @@ var createState = function () {
     var loop = function () {
       var item = list[i];
 
+      console.log(item, item[1], item[1].value, 'for');
       item[1].value = new Promise(function (resolve) {
         resolve(item[1].value);
       });
@@ -31,6 +32,7 @@ var createState = function () {
     for (var i = 0, list = cacheData; i < list.length; i += 1) loop();
   }
 
+  console.log(cacheData, 'cachedData');
   return new Map(cacheData);
 };
 

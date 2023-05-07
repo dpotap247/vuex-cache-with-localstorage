@@ -15,11 +15,13 @@ const createState = () => {
   const cacheData = storageData && JSON.parse(storageData) || [];
   if (!!storageData) {
     for (const item of cacheData) {
+      console.log(item, item[1], item[1].value, 'for')
       item[1].value = new Promise((resolve) => {
         resolve(item[1].value);
       })
     }
   }
+  console.log(cacheData, 'cachedData')
   return new Map(cacheData);
 }
 
