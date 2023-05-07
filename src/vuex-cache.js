@@ -17,17 +17,15 @@ const createState = () => {
 }
 
 const saveToLocalStorage = () => {
-  window.addEventListener("beforeunload", function (event) {
-    const localStorageData = Array.from(state.entries());
-    for (const item of localStorageData) {
-      if (item[1].value instanceof Promise) {
-        item[1].value.then(result => {
-          item[1].value = result;
-        })
-      }
+  const localStorageData = Array.from(state.entries());
+  for (const item of localStorageData) {
+    if (item[1].value instanceof Promise) {
+      item[1].value.then(result => {
+        item[1].value = result;
+      })
     }
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(localStorageData));
-  });
+  }
+  localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(localStorageData));
 }
 
 /**
@@ -134,7 +132,6 @@ const isExpired = (expiresIn) => {
  */
 const state = createState();
 
-saveToLocalStorage();
 /**
  * Define cache property to store, or action context, object.
  * @param {Store} store
@@ -169,7 +166,6 @@ const defineCache = (store, options) => {
       }
 
       state.set(key, record)
-      console.log(value, 'check');
       return record.value.catch((error) => {
         state.delete(key)
         return Promise.reject(error)
@@ -310,6 +306,7 @@ const normalizeNamespace = (fn) => {
 export const cacheAction = (action, options) =>
   function (context, payload) {
     defineCache(context, options)
+    saveToLocalStorage()
     return action.call(this, context, payload)
   }
 

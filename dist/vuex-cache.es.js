@@ -18,23 +18,21 @@ var createState = function () {
 };
 
 var saveToLocalStorage = function () {
-  window.addEventListener("beforeunload", function (event) {
-    var localStorageData = Array.from(state.entries());
+  var localStorageData = Array.from(state.entries());
 
-    var loop = function () {
-      var item = list[i];
+  var loop = function () {
+    var item = list[i];
 
-      if (item[1].value instanceof Promise) {
-        item[1].value.then(function (result) {
-          item[1].value = result;
-        });
-      }
-    };
+    if (item[1].value instanceof Promise) {
+      item[1].value.then(function (result) {
+        item[1].value = result;
+      });
+    }
+  };
 
-    for (var i = 0, list = localStorageData; i < list.length; i += 1) loop();
+  for (var i = 0, list = localStorageData; i < list.length; i += 1) loop();
 
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(localStorageData));
-  });
+  localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(localStorageData));
 };
 /**
  * Type alias for Store or ActionContext instances.
@@ -150,7 +148,6 @@ var isExpired = function (expiresIn) {
 
 
 var state = createState();
-saveToLocalStorage();
 /**
  * Define cache property to store, or action context, object.
  * @param {Store} store
@@ -189,7 +186,6 @@ var defineCache = function (store, options) {
         value: store.dispatch.apply(store, params)
       };
       state.set(key, record);
-      console.log(value, 'check');
       return record.value.catch(function (error) {
         state.delete(key);
         return Promise.reject(error);
@@ -347,6 +343,7 @@ var normalizeNamespace = function (fn) {
 
 var cacheAction = function (action, options) { return function (context, payload) {
   defineCache(context, options);
+  saveToLocalStorage();
   return action.call(this, context, payload);
 }; };
 /**
