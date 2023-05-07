@@ -11,10 +11,12 @@ var isObject = function (value) {
   return !!value && typeof value === 'object';
 };
 
+var LOCAL_STORAGE_KEY = 'VUEX-CACHE-STATE';
+
 var createCache = function (options) { return function (store) { return defineCache(store, options); }; };
 
 var createState = function () {
-  var storageData = localStorage.getItem(STORAGE_NAME);
+  var storageData = localStorage.getItem(LOCAL_STORAGE_KEY);
   var cacheData = storageData && JSON.parse(storageData) || [];
 
   if (!!storageData) {
@@ -49,7 +51,7 @@ var saveToLocalStorage = function () {
     for (var i = 0, list = localSrotageData; i < list.length; i += 1) loop();
 
     console.log('saveToLocalStorage', localSrotageData);
-    localStorage.setItem(STORAGE_NAME, JSON.stringify(localSrotageData));
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(localSrotageData));
   });
 };
 /**

@@ -11,7 +11,7 @@ const LOCAL_STORAGE_KEY = 'VUEX-CACHE-STATE'
 const createCache = (options) => (store) => defineCache(store, options)
 
 const createState = () => {
-  const storageData = localStorage.getItem(STORAGE_NAME);
+  const storageData = localStorage.getItem(LOCAL_STORAGE_KEY);
   const cacheData = storageData && JSON.parse(storageData) || [];
   if (!!storageData) {
     for (const item of cacheData) {
@@ -34,7 +34,7 @@ const saveToLocalStorage = () => {
       }
     }
     console.log('saveToLocalStorage', localSrotageData)
-    localStorage.setItem(STORAGE_NAME, JSON.stringify(localSrotageData));
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(localSrotageData));
   });
 }
 
