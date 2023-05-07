@@ -19,6 +19,13 @@ const createState = () => {
 const saveToLocalStorage = () => {
   window.addEventListener("beforeunload", function (event) {
     const localSrotageData = Array.from(state.entries());
+    for (const item of localSrotageData) {
+      if (item[1].value instanceof Promise) {
+        item[1].value.then(result => {
+          item[1].value = result;
+        })
+      }
+    }
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(localSrotageData));
   });
 }
