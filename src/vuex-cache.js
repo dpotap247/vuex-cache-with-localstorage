@@ -8,6 +8,35 @@ const isObject = (value) => {
 }
 
 const LOCAL_STORAGE_KEY = 'VUEX-CACHE-STATE'
+const createCache = (options) => (store) => defineCache(store, options)
+
+const createState = () => {
+  const storageData = localStorage.getItem(STORAGE_NAME);
+  const cacheData = storageData && JSON.parse(storageData) || [];
+  if (!!storageData) {
+    for (const item of cacheData) {
+      item[1].value = new Promise((resolve) => {
+        resolve(item[1].value);
+      })
+    }
+  }
+  return new Map(cacheData);
+}
+
+const saveToLocalStorage = () => {
+  window.addEventListener("beforeunload", function (event) {
+    const localSrotageData = Array.from(state.entries());
+    for (const item of localSrotageData) {
+      if (item[1].value instanceof Promise) {
+        item[1].value.then(result => {
+          item[1].value = result;
+        })
+      }
+    }
+    console.log('saveToLocalStorage', localSrotageData)
+    localStorage.setItem(STORAGE_NAME, JSON.stringify(localSrotageData));
+  });
+}
 
 /**
  * Type alias for Store or ActionContext instances.
@@ -339,36 +368,6 @@ export const mapCacheActions = normalizeNamespace((namespace, actions) => {
  * @param {Options} options
  * @returns {(store: Store) => void}
  */
-const createCache = (options) => (store) => defineCache(store, options)
-
-const createState = () => {
-  const storageData = localStorage.getItem(STORAGE_NAME);
-  const cacheData = storageData && JSON.parse(storageData) || [];
-  if (!!storageData) {
-    for (const item of cacheData) {
-      item[1].value = new Promise((resolve) => {
-        resolve(item[1].value);
-      })
-    }
-  }
-  console.log('createState', cacheData)
-  return new Map(cacheData);
-}
-
-const saveToLocalStorage = () => {
-  window.addEventListener("beforeunload", function (event) {
-    const localSrotageData = Array.from(state.entries());
-    for (const item of localSrotageData) {
-      if (item[1].value instanceof Promise) {
-        item[1].value.then(result => {
-          item[1].value = result;
-        })
-      }
-    }
-    console.log('saveToLocalStorage', localSrotageData)
-    localStorage.setItem(STORAGE_NAME, JSON.stringify(localSrotageData));
-  });
-}
 
 
 
