@@ -13,7 +13,6 @@ const createCache = (options) => (store) => defineCache(store, options)
 const createState = () => {
   const storageData = localStorage.getItem(LOCAL_STORAGE_KEY);
   const cacheData = storageData && JSON.parse(storageData) || [];
-  console.log(cacheData, 'cacheData')
   return new Map(cacheData);
 }
 
@@ -27,7 +26,6 @@ const saveToLocalStorage = () => {
         })
       }
     }
-    console.log(localStorageData, 'localSrotageData')
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(localStorageData));
   });
 }
