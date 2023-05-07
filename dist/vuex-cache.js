@@ -18,7 +18,6 @@ var createCache = function (options) { return function (store) { return defineCa
 var createState = function () {
   var storageData = localStorage.getItem(LOCAL_STORAGE_KEY);
   var cacheData = storageData && JSON.parse(storageData) || [];
-  console.log(cacheData, 'cacheData');
   return new Map(cacheData);
 };
 
@@ -38,7 +37,6 @@ var saveToLocalStorage = function () {
 
     for (var i = 0, list = localStorageData; i < list.length; i += 1) loop();
 
-    console.log(localStorageData, 'localSrotageData');
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(localStorageData));
   });
 };

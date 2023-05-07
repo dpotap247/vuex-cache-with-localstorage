@@ -20,7 +20,6 @@
   var createState = function () {
     var storageData = localStorage.getItem(LOCAL_STORAGE_KEY);
     var cacheData = storageData && JSON.parse(storageData) || [];
-    console.log(cacheData, 'cacheData');
     return new Map(cacheData);
   };
 
@@ -40,7 +39,6 @@
 
       for (var i = 0, list = localStorageData; i < list.length; i += 1) loop();
 
-      console.log(localStorageData, 'localSrotageData');
       localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(localStorageData));
     });
   };
