@@ -6,8 +6,6 @@
 var isObject = function (value) {
   return !!value && typeof value === 'object';
 };
-
-var LOCAL_STORAGE_KEY = 'VUEX-CACHE-STATE';
 /**
  * Type alias for Store or ActionContext instances.
  * @typedef {import('vuex').Store<any> | import('vuex').ActionContext<any, any>} Store
@@ -120,9 +118,8 @@ var isExpired = function (expiresIn) {
  */
 
 
-var previousState = localStorage && localStorage.getItem(LOCAL_STORAGE_KEY) && JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY)) || [];
-var state = new Map(previousState);
-console.log(state, previousState, 'vuex-cache');
+var state = createState();
+saveToLocalStorage();
 /**
  * Define cache property to store, or action context, object.
  * @param {Store} store
@@ -370,5 +367,46 @@ var mapCacheActions = normalizeNamespace(function (namespace, actions) {
  */
 
 var createCache = function (options) { return function (store) { return defineCache(store, options); }; };
+
+var createState = function () {
+  var storageData = localStorage.getItem(STORAGE_NAME);
+  var cacheData = storageData && JSON.parse(storageData) || [];
+
+  if (!!storageData) {
+    var loop = function () {
+      var item = list[i];
+
+      item[1].value = new Promise(function (resolve) {
+        resolve(item[1].value);
+      });
+    };
+
+    for (var i = 0, list = cacheData; i < list.length; i += 1) loop();
+  }
+
+  console.log('createState', cacheData);
+  return new Map(cacheData);
+};
+
+var saveToLocalStorage = function () {
+  window.addEventListener("beforeunload", function (event) {
+    var localSrotageData = Array.from(state.entries());
+
+    var loop = function () {
+      var item = list[i];
+
+      if (item[1].value instanceof Promise) {
+        item[1].value.then(function (result) {
+          item[1].value = result;
+        });
+      }
+    };
+
+    for (var i = 0, list = localSrotageData; i < list.length; i += 1) loop();
+
+    console.log('saveToLocalStorage', localSrotageData);
+    localStorage.setItem(STORAGE_NAME, JSON.stringify(localSrotageData));
+  });
+};
 
 export { cacheAction, createCache as default, mapCacheActions };
