@@ -166,6 +166,9 @@ const defineCache = (store, options) => {
       }
 
       state.set(key, record)
+
+      saveToLocalStorage()
+
       return record.value.catch((error) => {
         state.delete(key)
         return Promise.reject(error)
@@ -202,6 +205,9 @@ const defineCache = (store, options) => {
           .filter((key) => key.split(':')[0] === type)
           .reduce((count, key) => count + state.delete(key), 0)
       }
+
+      saveToLocalStorage()
+
       return !!state.clear()
     },
 
@@ -217,6 +223,8 @@ const defineCache = (store, options) => {
         // Fallback on generateKey errors.
         return false
       }
+
+      saveToLocalStorage()
 
       return state.delete(key)
     },
@@ -306,7 +314,6 @@ const normalizeNamespace = (fn) => {
 export const cacheAction = (action, options) =>
   function (context, payload) {
     defineCache(context, options)
-    saveToLocalStorage()
     return action.call(this, context, payload)
   }
 

@@ -186,6 +186,7 @@ var defineCache = function (store, options) {
         value: store.dispatch.apply(store, params)
       };
       state.set(key, record);
+      saveToLocalStorage();
       return record.value.catch(function (error) {
         state.delete(key);
         return Promise.reject(error);
@@ -229,6 +230,7 @@ var defineCache = function (store, options) {
         return Array.from(state.keys()).filter(function (key) { return key.split(':')[0] === type; }).reduce(function (count, key) { return count + state.delete(key); }, 0);
       }
 
+      saveToLocalStorage();
       return !!state.clear();
     },
 
@@ -248,6 +250,7 @@ var defineCache = function (store, options) {
         return false;
       }
 
+      saveToLocalStorage();
       return state.delete(key);
     },
 
@@ -343,7 +346,6 @@ var normalizeNamespace = function (fn) {
 
 var cacheAction = function (action, options) { return function (context, payload) {
   defineCache(context, options);
-  saveToLocalStorage();
   return action.call(this, context, payload);
 }; };
 /**
