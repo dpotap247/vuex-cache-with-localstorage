@@ -1,14 +1,15 @@
 (function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
-  typeof define === 'function' && define.amd ? define(['exports'], factory) :
-  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.VuexCache = {}));
-})(this, (function (exports) { 'use strict';
+  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('debounce')) :
+  typeof define === 'function' && define.amd ? define(['exports', 'debounce'], factory) :
+  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.VuexCache = {}, global.debounce));
+})(this, (function (exports, debounce) { 'use strict';
 
   /**
    * Check if value is an object.
    * @param {any} value
    * @returns {value is Object}
    */
+
   var isObject = function (value) {
     return !!value && typeof value === 'object';
   };
@@ -40,6 +41,8 @@
 
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(localStorageData));
   };
+
+  var debounceSaveToLocalStorage = debounce.debounce(saveToLocalStorage, 2000);
   /**
    * Type alias for Store or ActionContext instances.
    * @typedef {import('vuex').Store<any> | import('vuex').ActionContext<any, any>} Store
@@ -50,7 +53,6 @@
    * @param {any} value
    * @returns {string}
    */
-
 
   var toString = function (value) {
     return isObject(value) ? JSON.stringify(value) : String(value);
@@ -192,7 +194,7 @@
           value: store.dispatch.apply(store, params)
         };
         state.set(key, record);
-        saveToLocalStorage();
+        debounceSaveToLocalStorage();
         return record.value.catch(function (error) {
           state.delete(key);
           return Promise.reject(error);
@@ -236,7 +238,7 @@
           return Array.from(state.keys()).filter(function (key) { return key.split(':')[0] === type; }).reduce(function (count, key) { return count + state.delete(key); }, 0);
         }
 
-        saveToLocalStorage();
+        debounceSaveToLocalStorage();
         return !!state.clear();
       },
 
@@ -256,7 +258,7 @@
           return false;
         }
 
-        saveToLocalStorage();
+        debounceSaveToLocalStorage();
         return state.delete(key);
       },
 

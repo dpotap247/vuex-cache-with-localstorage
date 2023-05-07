@@ -1,3 +1,5 @@
+import { debounce } from "debounce";
+
 /**
  * Check if value is an object.
  * @param {any} value
@@ -27,6 +29,8 @@ const saveToLocalStorage = () => {
   }
   localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(localStorageData));
 }
+
+const debounceSaveToLocalStorage = debounce(saveToLocalStorage, 2000);
 
 /**
  * Type alias for Store or ActionContext instances.
@@ -167,7 +171,7 @@ const defineCache = (store, options) => {
 
       state.set(key, record)
 
-      saveToLocalStorage()
+      debounceSaveToLocalStorage()
 
       return record.value.catch((error) => {
         state.delete(key)
@@ -206,7 +210,7 @@ const defineCache = (store, options) => {
           .reduce((count, key) => count + state.delete(key), 0)
       }
 
-      saveToLocalStorage()
+      debounceSaveToLocalStorage()
 
       return !!state.clear()
     },
@@ -224,7 +228,7 @@ const defineCache = (store, options) => {
         return false
       }
 
-      saveToLocalStorage()
+      debounceSaveToLocalStorage()
 
       return state.delete(key)
     },

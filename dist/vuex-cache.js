@@ -2,11 +2,14 @@
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
+var debounce = require('debounce');
+
 /**
  * Check if value is an object.
  * @param {any} value
  * @returns {value is Object}
  */
+
 var isObject = function (value) {
   return !!value && typeof value === 'object';
 };
@@ -38,6 +41,8 @@ var saveToLocalStorage = function () {
 
   localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(localStorageData));
 };
+
+var debounceSaveToLocalStorage = debounce.debounce(saveToLocalStorage, 2000);
 /**
  * Type alias for Store or ActionContext instances.
  * @typedef {import('vuex').Store<any> | import('vuex').ActionContext<any, any>} Store
@@ -48,7 +53,6 @@ var saveToLocalStorage = function () {
  * @param {any} value
  * @returns {string}
  */
-
 
 var toString = function (value) {
   return isObject(value) ? JSON.stringify(value) : String(value);
@@ -190,7 +194,7 @@ var defineCache = function (store, options) {
         value: store.dispatch.apply(store, params)
       };
       state.set(key, record);
-      saveToLocalStorage();
+      debounceSaveToLocalStorage();
       return record.value.catch(function (error) {
         state.delete(key);
         return Promise.reject(error);
@@ -234,7 +238,7 @@ var defineCache = function (store, options) {
         return Array.from(state.keys()).filter(function (key) { return key.split(':')[0] === type; }).reduce(function (count, key) { return count + state.delete(key); }, 0);
       }
 
-      saveToLocalStorage();
+      debounceSaveToLocalStorage();
       return !!state.clear();
     },
 
@@ -254,7 +258,7 @@ var defineCache = function (store, options) {
         return false;
       }
 
-      saveToLocalStorage();
+      debounceSaveToLocalStorage();
       return state.delete(key);
     },
 
